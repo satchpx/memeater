@@ -17,5 +17,6 @@ kubectl apply -f memeater-deployment.yaml
 
 ## Note:
 ```
-1. The resource limits are set to 512MiB. To simulate an OOM faster or slower, adjust the resource limit accordingly
+- The resource limits are set to 512MiB. 
+- To simulate an OOM faster or slower, adjust the resource limit accordingly
 ```
