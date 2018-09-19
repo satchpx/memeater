@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: memeater-pv-claim
+  annotations:
+    volume.beta.kubernetes.io/storage-class: px-high-rf2
+  labels:
+    app: memeater
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: memeater
+  labels:
+    app: memeater
+spec:
+  selector:
+    matchLabels:
+      app: memeater
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: memeater
+    spec:
+      containers:
+      - image: satchpx/memeater:latest
+        name: memeater
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - name: memeater-persistent-storage
+          mountPath: /mnt
+        #command: ["python /opt/bin/memeater.py"]
+      volumes:
+      - name: memeater-persistent-storage
+        persistentVolumeClaim:
+          claimName: memeater-pv-claim
